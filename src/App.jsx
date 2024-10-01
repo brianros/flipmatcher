@@ -115,15 +115,15 @@ function App() {
   const isGameOver = matchedPairs.length === (rows * cols) / 2;
 
   return (
-    <div className="min-h-screen min-w-[320px] flex flex-col bg-gray-100 overflow-hidden">
+    <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
       {/* Navbar */}
-      <nav className="h-[10vh] sm:h-[12vh] md:h-[15vh] min-h-[60px] flex items-center justify-center bg-blue-500 text-white">
+      <nav className="flex-shrink-0 h-[10vh] min-h-[60px] flex items-center justify-center bg-blue-500 text-white">
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">Memory Match</h1>
       </nav>
 
       {/* Main content */}
       <main className="flex-grow flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
-        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl flex flex-col items-center">
+        <div className="w-full h-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl flex flex-col items-center">
           <SizeSelector 
             sizes={BOARD_SIZES}
             value={boardSizeIndex} 
@@ -133,8 +133,8 @@ function App() {
             <span className="mr-4">Score: {score}</span>
             <span>Moves: {Math.ceil(moves / 2)}</span>
           </div>
-          <div className="w-full aspect-square flex items-center justify-center">
-            <div className="w-full h-full max-w-[80vmin] max-h-[80vmin]">
+          <div className="flex-grow w-full flex items-center justify-center">
+            <div className="w-full h-full max-w-[80vmin] max-h-[80vmin] aspect-square">
               <GameBoard cards={cards} onCardClick={handleCardClick} rows={rows} cols={cols} />
             </div>
           </div>
@@ -142,7 +142,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="h-[5vh] min-h-[30px] flex items-center justify-center bg-gray-200 text-xs sm:text-sm">
+      <footer className="flex-shrink-0 h-[5vh] min-h-[30px] flex items-center justify-center bg-gray-200 text-xs sm:text-sm">
         <p>&copy; 2023 Memory Match Game</p>
       </footer>
 

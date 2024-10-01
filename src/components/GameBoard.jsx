@@ -11,10 +11,10 @@ const GameBoard = ({ cards, onCardClick, rows, cols }) => {
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
           gridTemplateRows: `repeat(${rows}, 1fr)`,
           aspectRatio: `${cols} / ${rows}`,
-          width: cols > rows ? 'auto' : '100%',
-          height: rows > cols ? 'auto' : '100%',
-          maxWidth: '100%',
-          maxHeight: '100%',
+          width: cols > rows ? 'auto' : '90%',
+          height: rows > cols ? 'auto' : '90%',
+          maxWidth: '90%',
+          maxHeight: '90%',
         }}
       >
         {cards.map((card) => (
