@@ -26,13 +26,13 @@ const Card = ({ id, isFlipped, patternId, onClick }) => {
       >
         {/* Back of the card */}
         <div 
-          className="absolute inset-0 backface-hidden bg-blue-500 rounded-sm sm:rounded-lg flex items-center justify-center"
+          className="absolute inset-0 backface-hidden bg-white hover:bg-red-100 border-black border-2 rounded-sm sm:rounded-lg flex items-center justify-center"
           style={{ 
             backfaceVisibility: 'hidden',
             transform: 'rotateY(0deg)'
           }}
         >
-          <div className="w-3/4 h-3/4 bg-white rounded-full"></div>
+          <div className="w-1/2 h-1/2 bg-red-600 rounded-full"></div>
         </div>
         
         {/* Front of the card (with SVG pattern) */}
