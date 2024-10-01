@@ -115,27 +115,49 @@ function App() {
   const isGameOver = matchedPairs.length === (rows * cols) / 2;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold mb-8">Memory Match</h1>
-      <SizeSelector 
-        sizes={BOARD_SIZES}
-        value={boardSizeIndex} 
-        onChange={handleSizeChange} 
-      />
-      <div className="mb-4">
-        <span className="mr-4">Score: {score}</span>
-        <span>Moves: {moves}</span>
-      </div>
-      <GameBoard cards={cards} onCardClick={handleCardClick} rows={rows} cols={cols} />
+    <div className="min-h-screen min-w-[320px] flex flex-col bg-gray-100 overflow-hidden">
+      {/* Navbar */}
+      <nav className="h-[10vh] sm:h-[12vh] md:h-[15vh] min-h-[60px] flex items-center justify-center bg-blue-500 text-white">
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">Memory Match</h1>
+      </nav>
+
+      {/* Main content */}
+      <main className="flex-grow flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl flex flex-col items-center">
+          <SizeSelector 
+            sizes={BOARD_SIZES}
+            value={boardSizeIndex} 
+            onChange={handleSizeChange} 
+          />
+          <div className="mb-2 text-xs sm:text-sm md:text-base lg:text-lg">
+            <span className="mr-4">Score: {score}</span>
+            <span>Moves: {Math.ceil(moves / 2)}</span>
+          </div>
+          <div className="w-full aspect-square flex items-center justify-center">
+            <div className="w-full h-full max-w-[80vmin] max-h-[80vmin]">
+              <GameBoard cards={cards} onCardClick={handleCardClick} rows={rows} cols={cols} />
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="h-[5vh] min-h-[30px] flex items-center justify-center bg-gray-200 text-xs sm:text-sm">
+        <p>&copy; 2023 Memory Match Game</p>
+      </footer>
+
+      {/* Game over modal */}
       {isGameOver && (
-        <div className="mt-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Congratulations! You've won!</h2>
-          <button 
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => resetGame(BOARD_SIZES[boardSizeIndex])}
-          >
-            Play Again
-          </button>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+          <div className="bg-white p-6 sm:p-8 rounded-lg text-center max-w-xs sm:max-w-sm">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4">Congratulations! You've won!</h2>
+            <button 
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base"
+              onClick={() => resetGame(BOARD_SIZES[boardSizeIndex])}
+            >
+              Play Again
+            </button>
+          </div>
         </div>
       )}
     </div>
