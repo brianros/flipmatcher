@@ -6,15 +6,15 @@ const GameBoard = ({ cards, onCardClick, rows, cols }) => {
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div 
-        className="grid gap-1 sm:gap-2"
+        className="grid gap-1 sm:gap-2 border-2 border-blue-600"
         style={{
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
           gridTemplateRows: `repeat(${rows}, 1fr)`,
           aspectRatio: `${cols} / ${rows}`,
-          width: cols > rows ? 'auto' : '90%',
-          height: rows > cols ? 'auto' : '90%',
-          maxWidth: '90%',
-          maxHeight: '90%',
+          width: cols >= rows ? '100%' : 'auto',
+          height: rows > cols ? '100%' : 'auto',
+          maxWidth: '100%',
+          maxHeight: '100%',
         }}
       >
         {cards.map((card) => (

@@ -10,14 +10,14 @@ const Card = ({ id, isFlipped, patternId, onClick }) => {
     if (cardRef.current) {
       gsap.to(cardRef.current, {
         rotationY: isFlipped ? 180 : 0,
-        duration: 0.4,
+        duration: isFlipped ? 0.4 : 0.3, // Set different durations
         ease: "power2.inOut"
       });
     }
   }, [isFlipped]);
 
   return (
-    <div className="aspect-square w-full h-full">
+    <div className="aspect-square max-w-[250px] max-h-[250px] min-w-[60px] min-h-[60px] flex justify-center items-center mx-auto">
       <div 
         ref={cardRef}
         onClick={onClick}
@@ -37,8 +37,13 @@ const Card = ({ id, isFlipped, patternId, onClick }) => {
         
         {/* Front of the card (with SVG pattern) */}
         <div 
-          className="absolute inset-0 backface-hidden bg-white rounded-sm sm:rounded-lg flex items-center justify-center" 
-          style={{ 
+          className="absolute inset-0 backface-hidden rounded-sm sm:rounded-lg  flex items-center justify-center border-2 border-blue-600" 
+          style={{backgroundImage: `repeating-conic-gradient(
+            from 0deg at -30% -20%,
+            rgba(255, 255, 255, 0.7) 0deg 6deg,
+            rgba(255, 0, 0, 0.7) 4deg 8deg
+            
+          )`,
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)'
           }}

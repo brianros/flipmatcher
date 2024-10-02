@@ -1,7 +1,9 @@
 // src/App.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import GameBoard from './components/GameBoard';
 import SizeSelector from './components/SizeSelector';
+import LoadingOverlay from './components/LoadingOverlay';
+import Footer from './components/Footer';
 
 // Dynamically import all SVGs
 const svgFiles = import.meta.glob('./assets/svg/*.svg');
@@ -18,6 +20,7 @@ const BOARD_SIZES = [
   [4, 6], [5, 6], [6, 6], [6, 7], [6, 8], [7, 8], [8, 8]
 ];
 
+
 function App() {
   const [cards, setCards] = useState([]);
   const [boardSizeIndex, setBoardSizeIndex] = useState(4); // Default to 4x4
@@ -26,6 +29,36 @@ function App() {
   const [isChecking, setIsChecking] = useState(false);
   const [score, setScore] = useState(0);
   const [moves, setMoves] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadAssets = useCallback(async () => {
+    const startTime = Date.now();
+
+    try {
+      const loadedSvgs = await Promise.all(
+        Object.entries(svgFiles).map(async ([path, importFn]) => {
+          const module = await importFn();
+          return [path, module.default];
+        })
+      );
+    } catch (error) {
+      console.error('Failed to load assets:', error);
+    } finally {
+      const endTime = Date.now();
+      const loadTime = endTime - startTime;
+      const remainingTime = Math.max(2000 - loadTime, 0);
+
+      // Ensure a minimum loading time of 2 seconds
+      setTimeout(() => {
+        setIsLoading(false);
+      }, remainingTime);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    loadAssets();
+  }, [loadAssets]);
 
   useEffect(() => {
     resetGame(BOARD_SIZES[boardSizeIndex]);
@@ -34,14 +67,17 @@ function App() {
   const resetGame = ([rows, cols]) => {
     const totalCards = rows * cols;
     const pairsNeeded = totalCards / 2;
-    
-    let patterns = [...PATTERNS];
-    while (patterns.length < pairsNeeded) {
-      patterns = [...patterns, ...PATTERNS];
-    }
-    patterns = patterns.slice(0, pairsNeeded);
 
-    const newCards = patterns.flatMap((pattern, index) => [
+    // Create an array to hold the selected patterns
+    const selectedPatterns = [];
+
+    // Randomly select patterns, allowing for repetition
+    for (let i = 0; i < pairsNeeded; i++) {
+      const randomPattern = PATTERNS[Math.floor(Math.random() * PATTERNS.length)];
+      selectedPatterns.push(randomPattern);
+    }
+
+    const newCards = selectedPatterns.flatMap((pattern, index) => [
       { id: index * 2, patternId: pattern, isFlipped: false },
       { id: index * 2 + 1, patternId: pattern, isFlipped: false }
     ]);
@@ -108,7 +144,15 @@ function App() {
   };
 
   const handleSizeChange = (newSizeIndex) => {
-    setBoardSizeIndex(newSizeIndex);
+    // Unflip any currently flipped cards
+    setCards(prevCards => 
+      prevCards.map(card => ({ ...card, isFlipped: false }))
+    );
+
+    // Delay the reshuffle to allow the unflip animation to complete
+    setTimeout(() => {
+      setBoardSizeIndex(newSizeIndex);
+    }, 400); // Adjust the delay as needed (400ms for example)
   };
 
   const [rows, cols] = BOARD_SIZES[boardSizeIndex];
@@ -117,34 +161,45 @@ function App() {
   return (
     <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
       {/* Navbar */}
-      <nav className="flex-shrink-0 h-[10vh] min-h-[60px] flex items-center justify-center bg-blue-500 text-white">
+      <nav className="flex-shrink-0 h-[8vh] min-h-[50px] flex items-center justify-center bg-red-500 text-white">
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">Memory Match</h1>
       </nav>
 
       {/* Main content */}
-      <main className="flex-grow flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
-        <div className="w-full h-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl flex flex-col items-center">
-          <SizeSelector 
-            sizes={BOARD_SIZES}
-            value={boardSizeIndex} 
-            onChange={handleSizeChange} 
-          />
-          <div className="mb-2 text-xs sm:text-sm md:text-base lg:text-lg">
+      <main className="flex-grow flex flex-col lg:flex-row items-start justify-center p-1 overflow-hidden">
+        {/* Game Area Column */}
+        <div className="w-full lg:w-[60%] h-full flex flex-col items-center relative top-0 border-2 border-blue-700">
+          <div className="mb-0 text-xs sm:text-sm"> 
             <span className="mr-4">Score: {score}</span>
             <span>Moves: {Math.ceil(moves / 2)}</span>
           </div>
-          <div className="flex-grow w-full flex items-center justify-center">
-            <div className="w-full h-full max-w-[80vmin] max-h-[80vmin] aspect-square">
+          <div className="w-full flex-grow flex items-start justify-center">
+            <div 
+              className="relative"
+              style={{
+                width: cols >= rows ? '100%' : 'auto',
+                height: rows >= cols ? '80%' : 'auto',
+                aspectRatio: `${cols} / ${rows}`,
+                maxWidth: '80%',
+                maxHeight: '80%',
+              }}
+            >
               <GameBoard cards={cards} onCardClick={handleCardClick} rows={rows} cols={cols} />
             </div>
           </div>
         </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="flex-shrink-0 h-[5vh] min-h-[30px] flex items-center justify-center bg-gray-200 text-xs sm:text-sm">
-        <p>&copy; 2023 Memory Match Game</p>
-      </footer>
+        {/* Size Selector Column */}
+        <div className="w-full lg:w-[10%] h-full mr-2 border-blue-800 border-2 lg:mr-0 lg:mb-0 mb-2 flex justify-center">
+          <SizeSelector 
+            sizes={BOARD_SIZES}
+            value={boardSizeIndex} 
+            onChange={handleSizeChange} 
+            className="lg:rotate-0 rotate-180" // Rotate for small screens
+          />
+        </div>
+      </main>
+      <Footer/>
 
       {/* Game over modal */}
       {isGameOver && (
@@ -152,14 +207,27 @@ function App() {
           <div className="bg-white p-6 sm:p-8 rounded-lg text-center max-w-xs sm:max-w-sm">
             <h2 className="text-xl sm:text-2xl font-bold mb-4">Congratulations! You've won!</h2>
             <button 
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base"
-              onClick={() => resetGame(BOARD_SIZES[boardSizeIndex])}
+              className="bg-red-700 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm sm:text-base"
+              onClick={() => {
+                // Unflip any currently flipped cards
+                setCards(prevCards => 
+                  prevCards.map(card => ({ ...card, isFlipped: false }))
+                );
+
+                // Delay the reshuffle to allow the unflip animation to complete
+                setTimeout(() => {
+                  resetGame(BOARD_SIZES[boardSizeIndex]);
+                }, 400); // Adjust the delay as needed (400ms for example)
+              }}
             >
               Play Again
             </button>
           </div>
         </div>
       )}
+
+      {/* Loading overlay */}
+      {isLoading && <LoadingOverlay />}
     </div>
   );
 }

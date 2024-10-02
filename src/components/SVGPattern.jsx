@@ -22,7 +22,7 @@ const SVGPattern = ({ patternId }) => {
   }, [patternId]);
 
   return (
-    <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: svgContent }} />
+    <div className="w-[90] h-[90]" dangerouslySetInnerHTML={{ __html: svgContent }} />
   );
 };
 
