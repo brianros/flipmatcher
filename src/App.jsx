@@ -5,12 +5,12 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 function App() {
   return (
-    <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
-      <Header />
+    <div className="h-screen flex flex-col bg-transparent overflow-hidden relative">
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/src/assets/bkg.jpg')", opacity: 0.5, zIndex: -1 }}></div>
+      <div><Header />
       <GameFlow />
-      <Footer />
+      <Footer /></div>
     </div>
   );
 }
-
 export default App;
