@@ -48,7 +48,7 @@ const Card = ({ id, isFlipped, patternId, onClick }) => {
             transform: 'rotateY(180deg)'
           }}
         >
-          <div className="w-full h-full p-1 sm:p-2">
+          <div className="w-full h-full p-1 sm:p-2" style={{ width: '80%', height: '80%', paddingTop: '10%' }}>
             <SVGPattern patternId={patternId} />
           </div>
         </div>

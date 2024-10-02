@@ -161,8 +161,27 @@ function App() {
   return (
     <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
       {/* Navbar */}
-      <nav className="flex-shrink-0 h-[8vh] min-h-[50px] flex items-center justify-center bg-red-500 text-white">
+      <nav className="flex-shrink-0 h-[8vh] min-h-[50px] flex items-center justify-between bg-red-500 text-white">
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">Memory Match</h1>
+        <div>
+          <button 
+            className="bg-white text-red-500 font-bold py-1 px-3 rounded mr-2"
+            onClick={() => resetGame(BOARD_SIZES[boardSizeIndex])}
+          >
+            Reset
+          </button>
+          <button 
+            className="bg-white text-red-500 font-bold py-1 px-3 rounded"
+            onClick={() => {
+              const allFaceUp = cards.every(card => card.isFlipped);
+              setCards(prevCards => 
+                prevCards.map(card => ({ ...card, isFlipped: !allFaceUp }))
+              );
+            }}
+          >
+            Toggle All Cards
+          </button>
+        </div>
       </nav>
 
       {/* Main content */}
