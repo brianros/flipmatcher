@@ -9,7 +9,7 @@ function App() {
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/src/assets/bkg.jpg')", opacity: 0.5, zIndex: -1 }}></div>
       <div><Header />
       <GameFlow />
-      <Footer /></div>
+      <div className="absolute bottom-0 w-full"><Footer /></div></div>
     </div>
   );
 }
