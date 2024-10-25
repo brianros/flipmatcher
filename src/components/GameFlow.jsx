@@ -70,8 +70,8 @@ const GameFlow = () => {
     }
 
     const newCards = selectedPatterns.flatMap((pattern, index) => [
-      { id: index * 2, patternId: pattern, isFlipped: false },
-      { id: index * 2 + 1, patternId: pattern, isFlipped: false }
+      { id: `card-${index * 2}`, patternId: pattern, isFlipped: false },
+      { id: `card-${index * 2 + 1}`, patternId: pattern, isFlipped: false }
     ]);
     setCards(newCards.sort(() => Math.random() - 0.5));
     setFlippedCards([]);
@@ -117,6 +117,7 @@ const GameFlow = () => {
       return;
     }
 
+    // Check if the SVGs are the same
     if (firstCard.patternId === secondCard.patternId) {
       setMatchedPairs(prev => [...prev, firstCard.patternId]);
       setScore(prev => prev + 1);
